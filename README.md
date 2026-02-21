@@ -5,13 +5,13 @@ Typed Python bindings for the [OPNsense REST API](https://docs.opnsense.org/deve
 ## Installation
 
 ```bash
-pip install opnsense-api
+pip install opnsense-api2
 ```
 
 With Authentik SSO support:
 
 ```bash
-pip install opnsense-api[authentik]
+pip install opnsense-api2[authentik]
 ```
 
 ## Quick start
