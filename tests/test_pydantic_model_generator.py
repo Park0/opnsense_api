@@ -1,0 +1,97 @@
+from unittest import TestCase
+from opn_pydantic_generator.pydantic_model_generator import OPNsenseModelParser
+
+
+class TestPydanticModelGenerator(TestCase):
+    def test_generate_model(self):
+        code = """from pydantic import BaseModel, Field
+from typing import Literal
+from opnsense_api.pydantic.pydantic_base import BoolAsIntMixin
+
+
+class LuaRequest(BaseModel, BoolAsIntMixin):
+    \"\"\"Generated model from XML form definition.\"\"\"
+
+    enabled: bool = Field(
+        default=False,
+        description="Enable this Lua script."
+    )
+
+    name: str = Field(
+        ...,
+        description="Name to identify this Lua script.",
+        min_length=1
+    )
+
+    description: str = Field(
+        default="",
+        description="Description for this Lua script."
+    )
+
+    preload: bool = Field(
+        default=False,
+        description=(
+            "Whether HAProxy should load and execute this Lua script on startup. This is the default behaviour. However, if this Lua script is included by other Lua scripts using the 'require' function, then preloading should be disabled to avoid HAProxy errors."
+        )
+    )
+
+    filename_scheme: str = Field(
+        ...,
+        description=(
+            "Specify the filename scheme for this Lua script. Usually using the ID is sufficient and the most fail-safe apparoach. However, when using Lua's 'require' function this apparoach will not work and it becomes necessary to use the specified name as filename. In this case all non-alphanumeric characters are removed from the filename. Note that this may cause issues when creating multiple Lua scripts with the same name."
+        ),
+        min_length=1
+    )
+
+    content: str = Field(
+        ...,
+        description="Paste the content of your Lua script here.",
+        min_length=1
+    )
+"""
+
+        xml_form = '''
+            <form>
+                <field>
+                    <id>lua.enabled</id>
+                    <label>Enabled</label>
+                    <type>checkbox</type>
+                    <help>Enable this Lua script.</help>
+                </field>
+                <field>
+                    <id>lua.name</id>
+                    <label>Name</label>
+                    <type>text</type>
+                    <help>Name to identify this Lua script.</help>
+                </field>
+                <field>
+                    <id>lua.description</id>
+                    <label>Description</label>
+                    <type>text</type>
+                    <help>Description for this Lua script.</help>
+                </field>
+                <field>
+                    <id>lua.preload</id>
+                    <label>Preload on startup</label>
+                    <type>checkbox</type>
+                    <help>Whether HAProxy should load and execute this Lua script on startup. This is the default behaviour. However, if this Lua script is included by other Lua scripts using the "require" function, then preloading should be disabled to avoid HAProxy errors.</help>
+                </field>
+                <field>
+                    <id>lua.filename_scheme</id>
+                    <label>Filename Scheme</label>
+                    <type>dropdown</type>
+                    <help><![CDATA[Specify the filename scheme for this Lua script. Usually using the ID is sufficient and the most fail-safe apparoach. However, when using Lua's "require" function this apparoach will not work and it becomes necessary to use the specified name as filename. In this case all non-alphanumeric characters are removed from the filename. Note that this may cause issues when creating multiple Lua scripts with the same name.]]></help>
+                </field>
+                <field>
+                    <id>lua.content</id>
+                    <label>Content</label>
+                    <type>textbox</type>
+                    <help>Paste the content of your Lua script here.</help>
+                </field>
+            </form>
+            '''
+
+        generator = OPNsenseModelParser("")
+        model_code = generator.parse_xml_model(xml_form, 'LuaRequest')
+        # print(model_code)
+        # self.assertEqual(model_code, code)

@@ -1,0 +1,9 @@
+requests
+pydantic
+setuptools
+pyyaml
+truststore>=0.8.0
+authentik-client
+coverage
+lxml
+jinja2
